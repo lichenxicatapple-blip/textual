@@ -53,6 +53,22 @@
       self.backgroundColor = .clear
 
       setUp()
+
+      NotificationCenter.default.addObserver(
+        self,
+        selector: #selector(handleDismissSelection),
+        name: .textualDismissSelection,
+        object: nil
+      )
+    }
+
+    @objc private func handleDismissSelection() {
+      guard let selectedRange = model.selectedRange, !selectedRange.isCollapsed else {
+        return
+      }
+      print("[Textual] dismissSelection via notification")
+      model.selectedRange = nil
+      _ = resignFirstResponder()
     }
 
     required init?(coder: NSCoder) {

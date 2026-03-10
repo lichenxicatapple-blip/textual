@@ -284,3 +284,10 @@ extension TextualNamespace where Base: View {
       .environment(\.thematicBreakStyle, style.thematicBreakStyle)
   }
 }
+
+// MARK: - Text Selection Notifications
+
+extension Notification.Name {
+  /// Post this notification to dismiss any active text selection in Textual views.
+  public static let textualDismissSelection = Notification.Name("textualDismissSelection")
+}
