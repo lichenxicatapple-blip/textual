@@ -19,7 +19,9 @@
 
     @discardableResult
     override func resignFirstResponder() -> Bool {
+      let hadSelection = model.selectedRange != nil
       let result = super.resignFirstResponder()
+      logger.debug("resignFirstResponder() -> \(result), hadSelection: \(hadSelection)")
       if result {
         model.selectedRange = nil
       }
