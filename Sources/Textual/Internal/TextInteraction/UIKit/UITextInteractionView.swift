@@ -17,6 +17,15 @@
       true
     }
 
+    @discardableResult
+    override func resignFirstResponder() -> Bool {
+      let result = super.resignFirstResponder()
+      if result {
+        model.selectedRange = nil
+      }
+      return result
+    }
+
     var model: TextSelectionModel
     var exclusionRects: [CGRect]
     var openURL: OpenURLAction
