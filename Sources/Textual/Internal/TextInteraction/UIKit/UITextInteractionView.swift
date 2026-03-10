@@ -155,6 +155,12 @@
 
   extension UITextInteractionView: UITextInteractionDelegate {
     func interactionShouldBegin(_ interaction: UITextInteraction, at point: CGPoint) -> Bool {
+      if let selectedRange = model.selectedRange, !selectedRange.isCollapsed {
+        logger.debug("interactionShouldBegin(at: \(point.logDescription)) -> false (dismissed)")
+        model.selectedRange = nil
+        _ = resignFirstResponder()
+        return false
+      }
       logger.debug("interactionShouldBegin(at: \(point.logDescription)) -> true")
       return true
     }
