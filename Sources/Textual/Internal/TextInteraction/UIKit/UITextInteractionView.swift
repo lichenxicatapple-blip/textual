@@ -38,6 +38,8 @@
 
     private(set) lazy var _tokenizer = UITextInputStringTokenizer(textInput: self)
     private let selectionInteraction: UITextInteraction
+    /// 选择开始的时间戳，用于防抖：避免选择刚创建就被外部通知取消
+    private var selectionStartTime: Date?
 
     init(
       model: TextSelectionModel,
@@ -64,6 +66,11 @@
 
     @objc private func handleDismissSelection() {
       guard let selectedRange = model.selectedRange, !selectedRange.isCollapsed else {
+        return
+      }
+      // 选择创建后短时间内忽略 dismiss 通知，避免长按抬起时触发的 SwiftUI 手势误取消选择
+      if let startTime = selectionStartTime, Date().timeIntervalSince(startTime) < 0.5 {
+        print("[Textual] dismissSelection ignored (too soon after selection start)")
         return
       }
       print("[Textual] dismissSelection via notification")
@@ -197,6 +204,7 @@
 
     func interactionWillBegin(_ interaction: UITextInteraction) {
       print("[Textual] interactionWillBegin, isFirstResponder: \(isFirstResponder)")
+      selectionStartTime = Date()
       _ = self.becomeFirstResponder()
     }
 
