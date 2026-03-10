@@ -156,6 +156,10 @@
   extension UITextInteractionView: UITextInteractionDelegate {
     func interactionShouldBegin(_ interaction: UITextInteraction, at point: CGPoint) -> Bool {
       if let selectedRange = model.selectedRange, !selectedRange.isCollapsed {
+        if isPointNearSelectionHandle(point, for: selectedRange) {
+          logger.debug("interactionShouldBegin(at: \(point.logDescription)) -> true (near handle)")
+          return true
+        }
         logger.debug("interactionShouldBegin(at: \(point.logDescription)) -> false (dismissed)")
         model.selectedRange = nil
         _ = resignFirstResponder()
@@ -163,6 +167,14 @@
       }
       logger.debug("interactionShouldBegin(at: \(point.logDescription)) -> true")
       return true
+    }
+
+    private func isPointNearSelectionHandle(_ point: CGPoint, for range: TextRange) -> Bool {
+      let selectionRects = model.selectionRects(for: range)
+      let tolerance: CGFloat = 44
+      return selectionRects.contains {
+        $0.rect.insetBy(dx: -tolerance, dy: -tolerance).contains(point)
+      }
     }
 
     func interactionWillBegin(_ interaction: UITextInteraction) {
