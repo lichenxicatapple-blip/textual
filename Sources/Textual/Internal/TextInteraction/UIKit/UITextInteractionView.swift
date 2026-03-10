@@ -21,7 +21,7 @@
     override func resignFirstResponder() -> Bool {
       let hadSelection = model.selectedRange != nil
       let result = super.resignFirstResponder()
-      logger.debug("resignFirstResponder() -> \(result), hadSelection: \(hadSelection)")
+      print("[Textual] resignFirstResponder() -> \(result), hadSelection: \(hadSelection), isFirstResponder was: \(hadSelection)")
       if result {
         model.selectedRange = nil
       }
@@ -159,15 +159,15 @@
     func interactionShouldBegin(_ interaction: UITextInteraction, at point: CGPoint) -> Bool {
       if let selectedRange = model.selectedRange, !selectedRange.isCollapsed {
         if isPointNearSelectionHandle(point, for: selectedRange) {
-          logger.debug("interactionShouldBegin(at: \(point.logDescription)) -> true (near handle)")
+          print("[Textual] interactionShouldBegin(at: \(point)) -> true (near handle)")
           return true
         }
-        logger.debug("interactionShouldBegin(at: \(point.logDescription)) -> false (dismissed)")
+        print("[Textual] interactionShouldBegin(at: \(point)) -> false (dismissed)")
         model.selectedRange = nil
         _ = resignFirstResponder()
         return false
       }
-      logger.debug("interactionShouldBegin(at: \(point.logDescription)) -> true")
+      print("[Textual] interactionShouldBegin(at: \(point)) -> true (no selection)")
       return true
     }
 
@@ -180,7 +180,7 @@
     }
 
     func interactionWillBegin(_ interaction: UITextInteraction) {
-      logger.debug("interactionWillBegin")
+      print("[Textual] interactionWillBegin, isFirstResponder: \(isFirstResponder)")
       _ = self.becomeFirstResponder()
     }
 
